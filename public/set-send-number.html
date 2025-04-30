@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>تعيين رقم إرسال الضرائب - Flow-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="send-notification.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>لوحة التحكم</h2>
+    <ul>
+      <li class="sidebar-item" id="send-notification">
+        <a href="/send-notification.html">إرسال إشعار</a>
+      </li>
+      <li class="sidebar-item" id="clear-notifications">
+        <a href="/clear-notifications.html">تصفير الإشعارات</a>
+      </li>
+      <li class="sidebar-item" id="balance">
+        <a href="/balance.html">عرض الرصيد</a>
+      </li>
+      <li class="sidebar-item" id="add-balance">
+        <a href="/add-balance.html">إضافة رصيد</a>
+      </li>
+      <li class="sidebar-item" id="set-receive-number">
+        <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+      </li>
+      <li class="sidebar-item" id="set-send-number">
+        <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+      </li>
+      <li class="sidebar-item" id="set-tax">
+        <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+      </li>
+      <li class="sidebar-item" id="clear-user-data">
+        <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="user-info">
+        <a href="/user-info.html">عرض معلومات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="block-user">
+        <a href="/block-user.html">إدارة الحظر</a>
+      </li>
+      </ul>
+
+  </div>
+  <div class="main-content">
+    <div class="container">
+      <h1>تعيين رقم إرسال الضرائب</h1>
+      <input type="text" id="setSendUserId" placeholder="أدخل ID المستخدم">
+      <input type="text" id="setSendNumber" placeholder="أدخل رقم الإرسال">
+      <button onclick="setSendNumber()">تعيين</button>
+      <div id="setSendResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const currentPage = window.location.pathname.split("/").pop().replace(".html", "");
+    const activeItem = document.getElementById(currentPage);
+    if (activeItem) {
+      activeItem.classList.add("active");
+    }
+
+    async function setSendNumber() {
+      const userId = document.getElementById("setSendUserId").value;
+      const number = document.getElementById("setSendNumber").value;
+      if (!userId || !number) return alert("يرجى إدخال ID المستخدم ورقم الإرسال.");
+
+      try {
+        const response = await fetch(`/api/setsendnum`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, number }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          document.getElementById("setSendResult").textContent = "✅ تم تعيين رقم الإرسال بنجاح!";
+        } else {
+          document.getElementById("setSendResult").textContent = data.error || "❌ حدث خطأ أثناء تعيين رقم الإرسال.";
+        }
+      } catch (error) {
+        console.error("Error setting send number:", error);
+        document.getElementById("setSendResult").textContent = "❌ حدث خطأ أثناء تعيين رقم الإرسال.";
+      }
+    }
+  </script>
+</body>
+</html>

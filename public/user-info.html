@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>عرض معلومات المستخدم - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="send-notification.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>لوحة التحكم</h2>
+    <ul>
+      <li class="sidebar-item" id="send-notification">
+        <a href="/send-notification.html">إرسال إشعار</a>
+      </li>
+      <li class="sidebar-item" id="clear-notifications">
+        <a href="/clear-notifications.html">تصفير الإشعارات</a>
+      </li>
+      <li class="sidebar-item" id="balance">
+        <a href="/balance.html">عرض الرصيد</a>
+      </li>
+      <li class="sidebar-item" id="add-balance">
+        <a href="/add-balance.html">إضافة رصيد</a>
+      </li>
+      <li class="sidebar-item" id="set-receive-number">
+        <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+      </li>
+      <li class="sidebar-item" id="set-send-number">
+        <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+      </li>
+      <li class="sidebar-item" id="set-tax">
+        <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+      </li>
+      <li class="sidebar-item" id="clear-user-data">
+        <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="user-info">
+        <a href="/user-info.html">عرض معلومات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="block-user">
+        <a href="/block-user.html">إدارة الحظر</a>
+      </li>
+      </ul>
+
+  </div>
+  <div class="main-content">
+    <div class="container">
+      <h1>عرض معلومات المستخدم</h1>
+      <input type="text" id="userIdInput" placeholder="أدخل ID المستخدم">
+      <button onclick="fetchUserInfo()">عرض المعلومات</button>
+      <div id="userInfoResult" style="margin-top: 20px; white-space: pre-wrap; font-family: 'Cairo', sans-serif;"></div>
+    </div>
+  </div>
+  <script>
+    const currentPage = window.location.pathname.split("/").pop().replace(".html", "");
+    const activeItem = document.getElementById(currentPage);
+    if (activeItem) {
+      activeItem.classList.add("active");
+    }
+    async function fetchUserInfo() {
+  const targetUserId = document.getElementById("userIdInput").value.trim();
+
+  if (!targetUserId) return alert("يرجى إدخال ID المستخدم.");
+
+  try {
+    const response = await fetch("/api/infouser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ targetUserId }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const { receiveNumber, sendNumber, taxAmount, balance } = data;
+      document.getElementById("userInfoResult").innerHTML = generateUserInfoEmbed(targetUserId, receiveNumber, sendNumber, taxAmount, balance);
+
+      function generateUserInfoEmbed(userId, receiveNumber, sendNumber, taxAmount, balance) {
+        return `
+          <div class="embed-container">
+            <div class="embed-header">🔹 قائمة المعلومات الخاصة بـ <span class="user-id">@${userId}</span></div>
+            <div class="embed-body">
+              <div class="embed-field"><span class="field-label">📥 رقم الاستلام:</span> <span class="field-value">${receiveNumber}</span></div>
+              <div class="embed-field"><span class="field-label">📤 رقم الإرسال:</span> <span class="field-value">${sendNumber}</span></div>
+              <div class="embed-field"><span class="field-label">💰 مبلغ الضرائب:</span> <span class="field-value">${taxAmount} جنيه</span></div>
+              <div class="embed-field"><span class="field-label">💳 الرصيد الحالي:</span> <span class="field-value">${balance} جنيه</span></div>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      document.getElementById("userInfoResult").textContent = "❌ بعض المعلومات مفقودة أو غير متوفرة.";
+    }
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    document.getElementById("userInfoResult").textContent = "❌ حدث خطأ أثناء جلب المعلومات.";
+  }
+}
+  </script>
+</body>
+</html>

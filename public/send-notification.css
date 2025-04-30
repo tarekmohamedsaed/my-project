@@ -1,0 +1,120 @@
+/* ...moved styles from send-notification.html... */
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #243b55;
+  color: #fff;
+  display: flex;
+  margin: 0;
+}
+
+.sidebar {
+  width: 300px;
+  background: #2f3136;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #00ff00;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  color: #00ff00;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 15px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar a:hover {
+  background: #00ff00;
+  color: #000;
+}
+
+.sidebar-item.active a {
+  background: #00eaff;
+  color: #000;
+}
+
+.main-content {
+  margin-left: 320px;
+  padding: 20px;
+  width: calc(100% - 320px);
+}
+
+.container {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 30px #00ff00;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1 {
+  color: #00ff00;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+label {
+  display: block;
+  text-align: right;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 16px;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+button {
+  background: #00ff00;
+  color: #000;
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #00eaff;
+}

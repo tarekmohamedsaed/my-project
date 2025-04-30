@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>إرسال إشعار - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #243b55;
+      color: #fff;
+      display: flex;
+      margin: 0;
+    }
+
+    .sidebar {
+      width: 300px;
+      background: #2f3136;
+      color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #00ff00;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      color: #00ff00;
+      margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin-bottom: 15px;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      display: block;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .sidebar a:hover {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .sidebar-item.active a {
+      background: #00eaff;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 320px;
+      padding: 20px;
+      width: calc(100% - 320px);
+    }
+    .embed-container {
+  background-color: #2f3136;
+  color: #ffffff;
+  border-left: 4px solid #7289da;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-family: 'Cairo', sans-serif;
+  margin-top: 20px;
+  max-width: 500px;
+}
+
+.embed-header {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.embed-body {
+  font-size: 14px;
+}
+
+.embed-field {
+  margin-bottom: 5px;
+}
+
+.field-label {
+  font-weight: bold;
+  color: #7289da;
+}
+
+.field-value {
+  color: #ffffff;
+}
+    .container {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px #00ff00;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    h1 {
+      color: #00ff00;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff00;
+    }
+
+    label {
+      display: block;
+      text-align: right;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 16px;
+    }
+    
+
+    textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    button {
+      background: #00ff00;
+      color: #000;
+      font-size: 18px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00eaff;
+    }
+
+    .success-message, .error-message {
+      display: none;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .success-message {
+      color: #00ff00;
+    }
+
+    .error-message {
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>لوحة التحكم</h2>
+    <ul>
+      <li class="sidebar-item" id="send-notification">
+        <a href="/send-notification.html">إرسال إشعار</a>
+      </li>
+      <li class="sidebar-item" id="clear-notifications">
+        <a href="/clear-notifications.html">تصفير الإشعارات</a>
+      </li>
+      <li class="sidebar-item" id="balance">
+        <a href="/balance.html">عرض الرصيد</a>
+      </li>
+      <li class="sidebar-item" id="add-balance">
+        <a href="/add-balance.html">إضافة رصيد</a>
+      </li>
+      <li class="sidebar-item" id="set-receive-number">
+        <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+      </li>
+      <li class="sidebar-item" id="set-send-number">
+        <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+      </li>
+      <li class="sidebar-item" id="set-tax">
+        <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+      </li>
+      <li class="sidebar-item" id="clear-user-data">
+        <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="user-info">
+        <a href="/user-info.html">عرض معلومات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="block-user">
+        <a href="/block-user.html">إدارة الحظر</a>
+      </li>
+      </ul>
+
+  </div>
+  <div class="main-content">
+    <div class="container">
+      <h1>إرسال إشعار</h1>
+      <form id="notificationForm">
+        <label for="userId">معرف العميل</label>
+        <input type="text" id="userId" placeholder="أدخل معرف العميل" required>
+        <label for="title">الصفة</label>
+        <select id="title" required>
+          <option value="info">معلومة</option>
+          <option value="warning">تحذير</option>
+          <option value="success">نجاح</option>
+        </select>
+        <label for="message">الوصف</label>
+        <textarea id="message" placeholder="أدخل وصف الإشعار" required></textarea>
+        <button type="submit">إرسال الإشعار</button>
+      </form>
+      <p class="success-message" id="successMessage">✅ تم إرسال الإشعار بنجاح!</p>
+      <p class="error-message" id="errorMessage">❌ حدث خطأ أثناء إرسال الإشعار.</p>
+    </div>
+  </div>
+
+  <script>
+    // Highlight the active page in the sidebar
+    const currentPage = window.location.pathname.split("/").pop().replace(".html", "");
+    const activeItem = document.getElementById(currentPage);
+    if (activeItem) {
+      activeItem.classList.add("active");
+    }
+
+    const form = document.getElementById("notificationForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById("userId").value.trim();
+      const title = document.getElementById("title").value;
+      const message = document.getElementById("message").value.trim();
+
+      if (!userId || !title || !message) {
+        errorMessage.textContent = "❌ يرجى ملء جميع الحقول.";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      try {
+        const response = await fetch("/send-notification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            title,
+            message,
+            timestamp: new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo", hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+            isRead: false, // الإشعار جديد
+          }),
+        });
+
+        if (response.ok) {
+          successMessage.style.display = "block";
+          errorMessage.style.display = "none";
+          form.reset();
+        } else {
+          const data = await response.json();
+          errorMessage.textContent = data.error || "❌ حدث خطأ أثناء إرسال الإشعار.";
+          errorMessage.style.display = "block";
+          successMessage.style.display = "none";
+        }
+      } catch (error) {
+        console.error("Error sending notification:", error);
+        errorMessage.textContent = "❌ حدث خطأ أثناء إرسال الإشعار.";
+        errorMessage.style.display = "block";
+        successMessage.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

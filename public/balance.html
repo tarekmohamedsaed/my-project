@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>عرض الرصيد - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="send-notification.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>لوحة التحكم</h2>
+    <ul>
+      <li class="sidebar-item" id="send-notification">
+        <a href="/send-notification.html">إرسال إشعار</a>
+      </li>
+      <li class="sidebar-item" id="clear-notifications">
+        <a href="/clear-notifications.html">تصفير الإشعارات</a>
+      </li>
+      <li class="sidebar-item" id="balance">
+        <a href="/balance.html">عرض الرصيد</a>
+      </li>
+      <li class="sidebar-item" id="add-balance">
+        <a href="/add-balance.html">إضافة رصيد</a>
+      </li>
+      <li class="sidebar-item" id="set-receive-number">
+        <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+      </li>
+      <li class="sidebar-item" id="set-send-number">
+        <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+      </li>
+      <li class="sidebar-item" id="set-tax">
+        <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+      </li>
+      <li class="sidebar-item" id="clear-user-data">
+        <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="user-info">
+        <a href="/user-info.html">عرض معلومات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="block-user">
+        <a href="/block-user.html">إدارة الحظر</a>
+      </li>
+      </ul>
+
+  </div>
+  <div class="main-content">
+    <div class="container">
+      <h1>عرض الرصيد</h1>
+      <input type="text" id="balanceUserId" placeholder="أدخل ID المستخدم">
+      <button onclick="fetchBalance()">عرض الرصيد</button>
+      <div id="balanceResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const currentPage = window.location.pathname.split("/").pop().replace(".html", "");
+    const activeItem = document.getElementById(currentPage);
+    if (activeItem) {
+      activeItem.classList.add("active");
+    }
+
+    async function fetchBalance() {
+      const userId = document.getElementById("balanceUserId").value;
+      if (!userId) return alert("يرجى إدخال ID المستخدم.");
+
+      try {
+        const response = await fetch(`/api/balance/${userId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          document.getElementById("balanceResult").innerHTML = `
+            <p>اسم المستخدم: ${data.username || "غير متوفر"}</p>
+            <p>الرصيد: ${data.balance || 0} جنيه</p>
+          `;
+        } else {
+          document.getElementById("balanceResult").textContent = data.error || "❌ حدث خطأ أثناء جلب الرصيد.";
+        }
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        document.getElementById("balanceResult").textContent = "❌ حدث خطأ أثناء جلب الرصيد.";
+      }
+    }
+  </script>
+</body>
+</html>

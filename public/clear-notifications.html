@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>تصفير الإشعارات - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="send-notification.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>لوحة التحكم</h2>
+    <ul>
+      <li class="sidebar-item" id="send-notification">
+        <a href="/send-notification.html">إرسال إشعار</a>
+      </li>
+      <li class="sidebar-item" id="clear-notifications">
+        <a href="/clear-notifications.html">تصفير الإشعارات</a>
+      </li>
+      <li class="sidebar-item" id="balance">
+        <a href="/balance.html">عرض الرصيد</a>
+      </li>
+      <li class="sidebar-item" id="add-balance">
+        <a href="/add-balance.html">إضافة رصيد</a>
+      </li>
+      <li class="sidebar-item" id="set-receive-number">
+        <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+      </li>
+      <li class="sidebar-item" id="set-send-number">
+        <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+      </li>
+      <li class="sidebar-item" id="set-tax">
+        <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+      </li>
+      <li class="sidebar-item" id="clear-user-data">
+        <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="user-info">
+        <a href="/user-info.html">عرض معلومات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="block-user">
+        <a href="/block-user.html">إدارة الحظر</a>
+      </li>
+      </ul>
+
+  </div>
+  <div class="main-content">
+    <div class="container">
+    <h1>تصفير الإشعارات</h1>
+    <form id="clearNotificationsForm">
+      <label for="userId">معرف العميل</label>
+      <input type="text" id="userId" placeholder="أدخل معرف العميل" required>
+      <button type="submit">حذف الإشعارات</button>
+    </form>
+    <div class="notification-banner" id="notificationBanner"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("clearNotificationsForm");
+    const notificationBanner = document.getElementById("notificationBanner");
+
+    function showNotificationBanner(message, isError = false) {
+      notificationBanner.textContent = message;
+      notificationBanner.className = "notification-banner";
+      if (isError) {
+        notificationBanner.classList.add("error");
+      }
+      notificationBanner.style.display = "block";
+      setTimeout(() => {
+        notificationBanner.style.display = "none";
+      }, 5000);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById("userId").value.trim();
+
+      if (!userId) {
+        showNotificationBanner("❌ يرجى إدخال معرف العميل.", true);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/notifications/${userId}`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          showNotificationBanner("✅ تم حذف جميع الإشعارات بنجاح!");
+          form.reset();
+        } else {
+          showNotificationBanner("❌ حدث خطأ أثناء حذف الإشعارات.", true);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        showNotificationBanner("❌ حدث خطأ أثناء حذف الإشعارات.", true);
+      }
+    });
+  </script>
+</body>
+</html>

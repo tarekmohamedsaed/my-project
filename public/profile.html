@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>استلام أموال - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: radial-gradient(105.43% 127.05% at 50.1% 127.05%, rgb(87, 87, 89) 20.65%, rgb(18, 18, 20) 85.16%);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Container */
+    .profile-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Header */
+    .profile-header {
+      background: linear-gradient(135deg, #2d3fb9, #1a237e);
+      color: #fff;
+      text-align: center;
+      padding: 30px 20px;
+      position: relative;
+    }
+    .profile-header img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    .profile-header h1 {
+      font-size: 26px;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .profile-header h1 .notification-icon {
+      font-size: 24px;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.2s ease;
+    }
+    .profile-header h1 .notification-icon:hover {
+      transform: scale(1.2);
+    }
+    .profile-header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    @keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+    /* Notifications Popup */
+    .notification-popup {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      z-index: 1000;
+    }
+    .notification-popup .notification-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .notification-popup .notification-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .notification-popup .notification-item .content {
+      flex: 1;
+    }
+    .notification-popup .notification-item .content .sender {
+      font-weight: bold;
+      color: #2d3fb9;
+    }
+    .notification-popup .notification-item .content .message {
+      font-size: 14px;
+      color: #fff;
+    }
+
+    /* Content */
+    .profile-content {
+      padding: 25px;
+    }
+    .profile-content h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #2d3fb9;
+      text-align: center; /*تحريك جمله تفاصيل الحساب*/
+    }
+    .profile-content .info-box {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .profile-content .info-box span {
+      font-weight: bold;
+      color: #fff;
+      width: 100%;
+      margin-left: auto; /* يدفع النص والأيقونة إلى اليمين */
+    }
+    .profile-content .info-box span.value {
+      color: #2d3fb9;
+    }
+
+    /* Button */
+    .profile-content .action-btn {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #2d3fb9, #1a237e);
+      color: #fff;
+      text-align: center;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    .profile-content .action-btn:hover {
+      background: linear-gradient(135deg, #1a237e, #2d3fb9);
+      transform: translateY(-3px);
+    }
+
+    /* Footer */
+    .profile-footer {
+      background: rgba(255, 255, 255, 0.05);
+      text-align: center;
+      padding: 15px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Additional Visual Enhancements */
+    .profile-header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: transparent; /* شريط التمرير الخلفي شفاف */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2d3fb9; /* الجزء المتحرك بلون التنسيق المميز */
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #1a237e; /* لون أغمق عند التمرير */
+    }
+
+    /* For Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #2d3fb9 transparent; /* الجزء المتحرك بلون التنسيق المميز */
+    }
+    *:hover {
+      scrollbar-color: #1a237e transparent; /* لون أغمق عند التمرير */
+    }
+    /* صندوق خاص بالرّصيد */
+.info-box.balance-box span.value {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+}
+
+/* صناديق مميزة لباقي العناصر */
+.info-box.highlighted {
+  background: rgba(45, 63, 185, 0.2);
+  border: 1px solid #2d3fb9;
+  box-shadow: 0 0 10px rgba(45, 63, 185, 0.5);
+}
+
+/* توسيط القيمة إلى الشمال */
+.info-box span.value {
+  margin-left: auto;
+  text-align: left;
+  /* صندوق الرصيد */
+.info-box.balance-box {
+  justify-content: flex-start; /* يخلي العناصر تمشي من اليمين للشمال */
+  gap: 15px; /* مسافة بين العنوان والقيمة */
+}
+
+/* نص الرصيد */
+.info-box.balance-box span.label {
+  color: #fff;
+  font-weight: bold;
+  flex-shrink: 0; /* يخلي النص ما يصغرش */
+}
+
+/* قيمة الرصيد داخل صندوق صغير */
+.info-box.balance-box span.value {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 12px;
+  border-radius: 8px;
+  color: #2d3fb9;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* صندوق الأيقونة بتاعة الرصيد */
+/* أيقونة الرصيد داخل صندوق أنيق */
+.value-icon {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 6px; /* تقليل المسافة حول الأيقونة */
+  border-radius: 6px; /* تقليل الحواف */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px; /* تقليل المسافة بين الأيقونة والنص */
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
+}
+/* أيقونة الرصيد داخل صندوق أنيق */
+.value-iconer {
+  background-color: #2db967; /* لون مميز خلف الأيقونة */
+  padding: 8px 10px; /* زيادة المسافة حول الأيقونة */
+  border-radius: 10px; /* تكبير الحواف */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -55px; /* تحريك الأيقونة لليمين بمقدار 20px */
+  margin-left: 0px; /* إزالة المسافة من اليسار */
+  box-shadow: inset 0 0 6px rgb(30, 145, 97); /* تحسين الظل */
+  width: 100px; /* عرض الصندوق */
+  height: 25px; /* تقليل الارتفاع للنصف */
+  transition: background-color 0.5s ease; /* تأثير عند التمرير */
+}
+.tax-iconer {
+  background-color: #c91919; /* لون مميز خلف الأيقونة */
+  padding: 8px 10px; /* زيادة المسافة حول الأيقونة */
+  border-radius: 10px; /* تكبير الحواف */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -50px; /* تحريك الأيقونة لليمين بمقدار 20px */
+  margin-left: 0px; /* إزالة المسافة من اليسار */
+  box-shadow: inset 0 0 6px rgb(100, 22, 45); /* تحسين الظل */
+  width: 100px; /* عرض الصندوق */
+  height: 25px; /* تقليل الارتفاع للنصف */
+  transition: background-color 0.5s ease; /* تأثير عند التمرير */
+}
+/* تأثير عند التمرير على الأيقونة */
+.value-iconer:hover {
+  background-color: #168645; /* لون أغمق عند التمرير */
+  box-shadow: inset 0 0 8px rgba(10, 165, 100, 0.2); /* تحسين الظل */
+}
+.tax-iconer:hover {
+  background-color: #7e111a; /* لون أغمق عند التمرير */
+  box-shadow: inset 0 0 8px rgb(92, 18, 40); /* تحسين الظل */
+}
+
+/*-----------------------الارقام-----------///
+/* صندوق أرقام الإرسال والاستلام */
+/* صندوق أرقام الإرسال والاستلام */
+/* صندوق أرقام الإرسال والاستلام */
+.info-box.number-box {
+  font-family: 'Roboto', sans-serif; /* استخدام خط روبوتو */
+  background: rgba(40, 40, 40, 0.5);
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 12px rgba(80, 80, 255, 0.3);
+  margin: -30px 0 10px 0; /* ← هنا رفعنا الخانة لفوق 15px */
+}
+
+
+/* عنوان كل خانة */
+.info-box.number-box .label {
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* القيمة */
+.info-box.number-box .value {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #00eaff;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: inset 0 0 6px rgba(0, 234, 255, 0.1);
+  position: relative; /* لجعل الأرقام تتحرك بسهولة */
+}
+
+/* تحريك الرقم يميناً وأعلى */
+.number-text {
+  font-family: 'Roboto', sans-serif; /* استخدام خط روبوتو */
+  letter-spacing: 1px;
+  position: absolute;
+  top: -5px; /* تحريك الرقم لأعلى قليلاً */
+  right: 10px; /* تحريك الرقم لليمين قليلاً */
+  color: #bde9e1;
+}
+
+/* أيقونة الرقم */
+.number-icon {
+  background-color: #2d3fb9;
+  margin-right: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: inset 0 0 6px rgba(45, 63, 185, 0.4);
+}
+
+/* أيقونة الاستلام بلون مختلف */
+.number-icon.receive {
+  background-color: #2d3fb9;
+  box-shadow: inset 0 0 6px rgba(45, 63, 185, 0.4);
+}
+
+/* النص */
+.number-text {
+  font-family: "Courier New", monospace;
+  letter-spacing: 1px;
+  position: absolute;
+  top: 450px; /* تحريك الرقم لأعلى */
+  right: -244px;
+  color: #bde9e1;
+}
+.send-number {
+  font-family: 'Roboto', sans-serif; /* استخدام خط روبوتو */
+  font-size: 13.2px;
+  top: 524px;
+  text-align: 50px; /* تحريك الرقم لليسار */
+}
+
+/* رقم الاستلام أقل */
+.receive-number {
+  font-family: 'Roboto', sans-serif; /* استخدام خط روبوتو */
+  font-size: 13.2px;
+  top: 607px;
+  text-align: 150px; /* تحريك الرقم لليسار */
+
+}
+.send-box {
+  position: relative;
+  top: -15px; /* ← ده بيرفع العنصر لفوق */
+}
+.number-icon i {
+  position: relative;
+  top: -10px; /* ← ارفع الأيقونة لفوق */
+}
+
+
+}
+
+
+
+      
+  </style>
+</head>
+<body>
+
+  <div id="popupOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 10000;">
+    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 16px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); padding: 20px; text-align: center; width: 90%; max-width: 400px; border: 1px solid rgba(255, 255, 255, 0.2);">
+      <h2 style="color: #fff; margin-bottom: 15px;">لديك عملية استلام حوالة إلكترونية</h2>
+      <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 20px;">برجاء استلام الحوالة أولاً للدخول إلى لوحة التحكم.</p>
+      <button id="acceptTransferBtn" style="background: linear-gradient(135deg, #2d3fb9, #1a237e); color: #fff; padding: 10px 20px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s ease, transform 0.2s ease;">استلام الحوالة</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("acceptTransferBtn").addEventListener("click", () => {
+      document.getElementById("popupOverlay").style.display = "none";
+    });
+  </script>
+  </div>
+  <div class="profile-container">
+    <!-- Header -->
+    <div class="profile-header">
+      <img id="avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="صورة الحساب">
+      <h1>
+        <span id="username" style="margin-right: 10px;">اسم المستخدم</span>
+     
+        <span class="notification-icon" id="notificationIcon" style="display: flex; align-items: center; justify-content: center; position: relative; margin-right: 5px;">
+          <i class="fa-solid fa-envelope" style="color: #2d3fb9; clip-path: polygon(0 0, 100% 0, 0 100%); position: absolute;"></i>
+          <i class="fa-solid fa-envelope" style="color: #fff; clip-path: polygon(0 100%, 100% 0, 100% 100%); position: absolute;"></i>
+            <span style="width: 5px; height: 5px; background-color: red; border-radius: 50%; position: absolute; top: -10px; right: -12px;"></span>
+        </span>
+      </h1>
+      <div class="notification-popup" id="notificationPopup"></div>
+    </div>
+    <p style="position: relative; top: -25px; font-size: calc(100% + 10px); text-align: center;">
+      <span style="color: #4343eb;">أ</span><span style="color: #fff;">س</span><span style="color: #4343eb;">ت</span><span style="color: #fff;">ل</span><span style="color: #4343eb;">ا</span><span style="color: #4343eb;">م</span>
+      <i class="fa-solid fa-wand-magic" style="color: #fff; background: linear-gradient(to bottom, #fff 50%, #4343eb 50%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+      <span style="color: #fff;">أ</span><span style="color: #fff;">م</span><span style="color: #4343eb;">و</span><span style="color: #fff;">ا</span><span style="color: #4343eb;">ل</span>
+    </p>
+
+    <!-- Content -->
+    <div class="profile-content">
+      <h2></h2>
+      <!-- الرصيد -->
+      <div class="info-box balance-box">
+        <span class="label">الرصيد:</span>
+        <span class="value">
+          <span class="value-icon">
+            <i class="fa-solid fa-sack-dollar"></i>
+          </span>
+          <span class="value-iconer">
+            <i class="fa-solid fa-sack-dollar"></i>
+          </span>
+          <span id="balance" class="balance-text">جاري التحميل...</span>
+        </span>
+      </div>
+         <!-- الرصيد -->
+         <div class="info-box balance-box">
+          <span class="label">الضرائب:</span>
+          <span class="value">
+            <span class="value-icon">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </span>
+            <span class="tax-iconer">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </span>
+            <span id="taxAmount" class="balance-text">جاري التحميل...</span>
+          </span>
+        </div>
+
+
+
+
+<!-- رقم الإرسال -->
+<!-- رقم الإرسال -->
+<div class="info-box number-box">
+  <span class="label">رقم الإرسال:</span>
+  <span class="value">
+    <span class="number-icon">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span id="sendNumber" class="number-text send-number">جاري التحميل...</span>
+  </span>
+</div>
+
+<!-- رقم الاستلام -->
+<div class="info-box number-box">
+  <span class="label">رقم الاستلام:</span>
+  <span class="value">
+    <span class="number-icon receive">
+      <i class="fa-solid fa-inbox"></i>
+    </span>
+    <span id="receiveNumber" class="number-text receive-number">جاري التحميل...</span>
+  </span>
+</div>
+
+
+<!-- زر دفع الضرائب -->
+<button class="action-btn" id="payBtn">سحب المبلغ الي رقم الاستلام</button>
+
+<!-- مدخل رفع الصورة (مخفي) -->
+<input type="file" id="uploadProof" accept="image/*" style="display: none;" />
+
+<!-- شريط التحميل والتأكيد -->
+<div id="progressBarContainer" style="display: none; margin-top: 20px;">
+  <div style="width: 100%; background: #0c0c0c; border-radius: 8px; overflow: hidden; height: 22px; box-shadow: 0 0 6px rgba(0, 234, 255, 0.2);">
+    <div id="progressBar" style="
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(270deg, #00f7ff, #008cff);
+      background-size: 200% 200%;
+      animation: moveProgress 2s linear infinite;
+      border-radius: 8px;">
+    </div>
+  </div>
+  <p id="progressStatus" style="color: #00eaff; font-weight: bold; margin-top: 10px;">جاري التحقق من صوره لعمليه دفع رسوم السحب بواسطة المسؤول...</p>
+</div>
+
+<!-- تأثير متحرك للشريط -->
+<style>
+@keyframes moveProgress {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+</style>
+    
+
+    <!-- Footer -->
+    <div class="profile-footer">
+      <p>جميع الحقوق محفوظة &copy; 2025 Fluo-Bank</p>
+    </div>
+  </div>
+
+  <script>
+    async function checkUserBanStatus() {
+      try {
+      const response = await fetch("/check-ban-status", {
+        method: "GET",
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("accessToken")}` // جلب التوكن من التخزين المحلي
+        }
+            });
+      if (!response.ok) {
+        console.error("فشل في التحقق من حالة الحظر.");
+        return;
+      }
+      const data = await response.json();
+
+      if (data.isBanned) {
+        alert("❌ تم حظر حسابك. يرجى التواصل مع الدعم الفني.");
+        window.location.href = "/error.html"; // توجيه المستخدم إلى صفحة الخطأ
+      }
+      } catch (error) {
+      console.error("فشل في التحقق من حالة الحظر:", error);
+      }
+    }
+
+    const notificationIcon = document.getElementById("notificationIcon");
+    const notificationPopup = document.getElementById("notificationPopup");
+
+    notificationIcon.addEventListener("click", () => {
+      notificationPopup.style.display =
+        notificationPopup.style.display === "none" || notificationPopup.style.display === ""
+          ? "block"
+          : "none";
+    });
+
+    async function fetchNotifications(userId) {
+      try {
+        const response = await fetch(`/notifications/${userId}`);
+        if (!response.ok) {
+          console.error("فشل في جلب الإشعارات.");
+          return;
+        }
+        const notifications = await response.json();
+        notificationPopup.innerHTML = "";
+
+        if (Array.isArray(notifications) && notifications.length > 0) {
+          notifications.reverse().forEach((notification) => {
+            const senderName = notification.senderName || "Flow-Bank";
+            const message = notification.tarsh || "لا توجد رسالة";
+            const senderAvatar = notification.senderAvatar || "/logo.png";
+            const time = notification.timestamp || "غير متوفر";
+
+            const item = document.createElement("div");
+            item.classList.add("notification-item");
+
+            item.innerHTML = `
+              <img src="${senderAvatar}" alt="صورة المرسل">
+              <div class="content">
+                <div class="sender">${senderName}</div>
+                <div class="message">${message}</div>
+                <div class="time" style="font-size: 12px; color: #aaa;">${time}</div>
+              </div>
+            `;
+
+            notificationPopup.appendChild(item);
+          });
+        } else {
+          notificationPopup.innerHTML = `<p style="text-align: center; color: #fff;">لا توجد إشعارات جديدة</p>`;
+        }
+      } catch (error) {
+
+        console.error("فشل في تحميل الإشعارات:", error);
+        
+      }
+    }
+
+    async function fetchUserData() {
+      try {
+        const response = await fetch("/profile-data");
+        if (!response.ok) {
+          console.error("فشل في جلب البيانات.");
+          return;
+        }
+        const data = await response.json();
+    
+        document.getElementById("username").textContent = data.username || "مستخدم غير معروف";
+        document.getElementById("balance").textContent = data.balance +"ج.م" || "غير متوفر";
+        document.getElementById("taxAmount").textContent = data.taxAmount +"ج.م" || "غير متوفر";
+        document.getElementById("sendNumber").textContent = data.sendNumber || "غير متوفر";
+        document.getElementById("receiveNumber").textContent = data.receiveNumber || "غير متوفر";
+
+        document.getElementById("avatar").src =
+          data.avatar && data.avatar !== "null"
+            ? data.avatar
+            : "https://cdn.discordapp.com/embed/avatars/0.png";
+
+        if (data.id) {
+    
+          await fetchNotifications(data.id);
+        } else {
+          console.error("معرف المستخدم غير متوفر.");
+        }
+      } catch (error) {
+        console.error("فشل في تحميل البيانات:", error);
+      }
+    }
+    document.getElementById("payBtn").addEventListener("click", async () => {
+  // أول حاجة، نطلب منه يختار الصورة يدويًا
+  const fileInput = document.getElementById("uploadProof");
+
+  // نفتح نافذة اختيار الصورة
+  fileInput.click();
+
+  // نستنى المستخدم يختار صورة
+  fileInput.onchange = async () => {
+    if (!fileInput.files.length) {
+      alert("عمليه سحب خاطئه برجاء تحويل مبلغ الضرايب الي رقم المرسل و رفع صورة لعمليه التحويل لأتمام عمليه سحب ناجحه وايداع المبلغ علي رقم الاستلام مع العلم يتم مراجعه الصوره بواسطه المسؤولين   ✔");
+      
+      // بعد 8 ثواني نفتح نافذة التحميل تاني
+      setTimeout(() => {
+        fileInput.click();
+      }, 8000);
+
+      return;
+    }
+
+    // ✅ الصورة موجودة - نبدأ عرض شريط التقدم
+    document.getElementById("progressBarContainer").style.display = "block";
+    const progressBar = document.getElementById("progressBar");
+
+    let width = 0;
+    const interval = setInterval(() => {
+      width += 1;
+      progressBar.style.width = width + "%";
+
+      if (width >= 100) {
+        clearInterval(interval);
+        progressBar.style.width = "100%";
+        
+        // تقدر تضيف بعدها أي خطوة زي إرسال البيانات للسيرفر
+        const status = document.getElementById("progressStatus");
+  status.textContent = "عمليه سحب خاطئه برجاء تحويل مبلغ الضرايب الي رقم المرسل و رفع صورة لعمليه التحويل لأتمام عمليه سحب ناجحه وايداع المبلغ علي رقم الاستلام مع العلم يتم مراجعه الصوره بواسطه المسؤولين   ✔";
+  status.classList.add("shake"); // نضيف كلاس الهز هنا
+      }
+    }, 60); // ده يخلي الشريط يكمل خلال 6 دقائق تقريبًا
+  };
+});
+
+
+    checkUserBanStatus();
+    fetchUserData();
+  </script>
+</body>
+</html>

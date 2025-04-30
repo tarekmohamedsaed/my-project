@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>إدارة الحظر - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="send-notification.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>لوحة التحكم</h2>
+        <ul>
+          <li class="sidebar-item" id="send-notification">
+            <a href="/send-notification.html">إرسال إشعار</a>
+          </li>
+          <li class="sidebar-item" id="clear-notifications">
+            <a href="/clear-notifications.html">تصفير الإشعارات</a>
+          </li>
+          <li class="sidebar-item" id="balance">
+            <a href="/balance.html">عرض الرصيد</a>
+          </li>
+          <li class="sidebar-item" id="add-balance">
+            <a href="/add-balance.html">إضافة رصيد</a>
+          </li>
+          <li class="sidebar-item" id="set-receive-number">
+            <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+          </li>
+          <li class="sidebar-item" id="set-send-number">
+            <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+          </li>
+          <li class="sidebar-item" id="set-tax">
+            <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+          </li>
+          <li class="sidebar-item" id="clear-user-data">
+            <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+          </li>
+          <li class="sidebar-item" id="user-info">
+            <a href="/user-info.html">عرض معلومات المستخدم</a>
+          </li>
+          <li class="sidebar-item" id="block-user">
+            <a href="/block-user.html">إدارة الحظر</a>
+          </li>
+          </ul>
+    
+      </div>
+      <div class="main-content">
+        <div class="container">
+      <h1>إدارة الحظر</h1>
+      <input type="text" id="userId" placeholder="أدخل ID المستخدم">
+      <button onclick="blockUser()">حظر المستخدم</button>
+      <button onclick="unblockUser()">إلغاء الحظر</button>
+      <div id="result"></div>
+    </div>
+  </div>
+  <script>
+    async function blockUser() {
+      const userId = document.getElementById("userId").value.trim();
+      if (!userId) return alert("يرجى إدخال ID المستخدم.");
+
+      try {
+        const response = await fetch(`/api/blockuser`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          document.getElementById("result").textContent = "✅ تم حظر المستخدم بنجاح!";
+        } else {
+          document.getElementById("result").textContent = data.error || "❌ حدث خطأ أثناء حظر المستخدم.";
+        }
+      } catch (error) {
+        console.error("Error blocking user:", error);
+        document.getElementById("result").textContent = "❌ حدث خطأ أثناء حظر المستخدم.";
+      }
+    }
+
+    async function unblockUser() {
+      const userId = document.getElementById("userId").value.trim();
+      if (!userId) return alert("يرجى إدخال ID المستخدم.");
+
+      try {
+        const response = await fetch(`/api/unblockuser`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          document.getElementById("result").textContent = "✅ تم إلغاء حظر المستخدم بنجاح!";
+        } else {
+          document.getElementById("result").textContent = data.error || "❌ حدث خطأ أثناء إلغاء الحظر.";
+        }
+      } catch (error) {
+        console.error("Error unblocking user:", error);
+        document.getElementById("result").textContent = "❌ حدث خطأ أثناء إلغاء الحظر.";
+      }
+    }
+  </script>
+</body>
+</html>

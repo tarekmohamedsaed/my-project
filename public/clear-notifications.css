@@ -1,0 +1,74 @@
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #2d629e;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.container {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 30px #00ff00;
+  width: 400px;
+  text-align: center;
+}
+h1 {
+  color: #00ff00;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #00ff00;
+}
+label {
+  display: block;
+  text-align: right;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 16px;
+}
+button {
+  background: #00ff00;
+  color: #000;
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  transition: background 0.3s ease;
+}
+button:hover {
+  background: #00eaff;
+}
+.notification-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #00ff00;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px #00ff00;
+  display: none;
+  z-index: 1000;
+  font-weight: bold;
+  text-align: center;
+}
+.notification-banner.error {
+  background: #ff0055;
+  color: #fff;
+  box-shadow: 0 0 15px #ff0055;
+}

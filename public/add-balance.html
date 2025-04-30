@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>إضافة رصيد - Alpha-Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="send-notification.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>لوحة التحكم</h2>
+    <ul>
+      <li class="sidebar-item" id="send-notification">
+        <a href="/send-notification.html">إرسال إشعار</a>
+      </li>
+      <li class="sidebar-item" id="clear-notifications">
+        <a href="/clear-notifications.html">تصفير الإشعارات</a>
+      </li>
+      <li class="sidebar-item" id="balance">
+        <a href="/balance.html">عرض الرصيد</a>
+      </li>
+      <li class="sidebar-item" id="add-balance">
+        <a href="/add-balance.html">إضافة رصيد</a>
+      </li>
+      <li class="sidebar-item" id="set-receive-number">
+        <a href="/set-receive-number.html">تعيين رقم استلام الأرباح</a>
+      </li>
+      <li class="sidebar-item" id="set-send-number">
+        <a href="/set-send-number.html">تعيين رقم الإرسال</a>
+      </li>
+      <li class="sidebar-item" id="set-tax">
+        <a href="/set-tax.html">تعيين مبلغ الضرائب</a>
+      </li>
+      <li class="sidebar-item" id="clear-user-data">
+        <a href="/clear-user-data.html">مسح بيانات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="user-info">
+        <a href="/user-info.html">عرض معلومات المستخدم</a>
+      </li>
+      <li class="sidebar-item" id="block-user">
+        <a href="/block-user.html">إدارة الحظر</a>
+      </li>
+      </ul>
+
+  </div>
+  <div class="main-content">
+    <div class="container">
+      <h1>إضافة رصيد</h1>
+      <input type="text" id="addBalanceUserId" placeholder="أدخل ID المستخدم">
+      <input type="number" id="addBalanceAmount" placeholder="أدخل المبلغ">
+      <input type="text" id="addSenderName" placeholder="أدخل اسم المرسل (اختياري)">
+      <input type="text" id="addReceiverName" placeholder="أدخل اسم المستلم (اختياري)">
+      <button onclick="addBalance()">إضافة</button>
+      <div id="addBalanceResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const currentPage = window.location.pathname.split("/").pop().replace(".html", "");
+    const activeItem = document.getElementById(currentPage);
+    if (activeItem) {
+      activeItem.classList.add("active");
+    }
+
+    async function addBalance() {
+      const userId = document.getElementById("addBalanceUserId").value;
+      const amount = document.getElementById("addBalanceAmount").value;
+      const senderName = document.getElementById("addSenderName").value;
+      const receiverName = document.getElementById("addReceiverName").value;
+
+      if (!userId || !amount) return alert("يرجى إدخال ID المستخدم والمبلغ.");
+
+      try {
+        const response = await fetch(`/api/addbalance`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, amount, senderName, receiverName }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          document.getElementById("addBalanceResult").textContent = "✅ تم إضافة الرصيد بنجاح!";
+        } else {
+          document.getElementById("addBalanceResult").textContent = data.error || "❌ حدث خطأ أثناء إضافة الرصيد.";
+        }
+      } catch (error) {
+        console.error("Error adding balance:", error);
+        document.getElementById("addBalanceResult").textContent = "❌ حدث خطأ أثناء إضافة الرصيد.";
+      }
+    }
+  </script>
+</body>
+</html>
